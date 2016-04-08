@@ -33,10 +33,10 @@ class HandlebarsHelper {
 		def fullPath
 		ApplicationContext appContext = Holders.getApplicationContext()
 		if (Holders.getGrailsApplication().warDeployed) {
-			fullPath = "${File.separator}WEB-INF${File.separator}grails-app${File.separator}views${File.separator}"
+			fullPath = "${File.separator}assets"
 			file = appContext.getResource(fullPath).getFile()
 		} else {
-			fullPath = "grails-app${File.separator}views${File.separator}"
+			fullPath = "grails-app${File.separator}assets${File.separator}handlebars"
 			file = new File(fullPath)
 		}
 		return file
