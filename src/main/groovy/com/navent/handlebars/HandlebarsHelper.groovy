@@ -10,11 +10,11 @@ import org.grails.web.util.WebUtils
 import org.springframework.context.ApplicationContext
 
 import asset.pipeline.grails.AssetsTagLib
+import asset.pipeline.i18n.I18nTagLib
 
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
-import com.github.jknack.handlebars.cache.HighConcurrencyTemplateCache
 import com.github.jknack.handlebars.io.FileTemplateLoader
 
 @Singleton
@@ -46,6 +46,26 @@ class HandlebarsHelper {
 		this.handlebars = new Handlebars(new FileTemplateLoader(getTemplatesBaseDir(),".html"))
 
 		/*
+		 * Registra el helper "i18nbundle" que permite invocar en handlebars el comportamiento del tag <asset:i18n/> del Asset pipeline plugin
+		 * para crear la funcion $L('nombre.mensaje') que permite utilizar mensajes internacionalizados del lado de javascript
+		 */
+		this.handlebars.registerHelper("i18nbundle", new Helper<Object>() {
+			
+			public CharSequence apply(Object context, Options options) {
+				
+				def i18nBean = Holders.grailsApplication.mainContext.getBean(I18nTagLib.class.name);
+				if(!i18nBean) {
+					throw new Exception('I18n asset pipeline plugin is not installed in the application')
+				}
+				
+				String locale = options.hash('locale')
+				String messageFile = options.hash('name')
+				
+				return new Handlebars.SafeString(i18nBean.i18n(locale: locale, name: messageFile))
+			}
+		});
+	
+		/*
 		 * Registra el helper "jsbundle" que permite invocar en handlebars el comportamiento del tag <asset:javascript src="bundle.js"/> del Asset pipeline plugin
 		 */
 		this.handlebars.registerHelper("jsbundle", new Helper<String>() {
@@ -56,6 +76,7 @@ class HandlebarsHelper {
 				return new Handlebars.SafeString(asset.javascript(src: src))
 			}
 		});
+	
 	
 		/*
 		 * Registra el helper "cssbundle" que permite invocar en handlebars el comportamiento del tag <asset:stylesheet  href="bundle.css"/> del Asset pipeline plugin
