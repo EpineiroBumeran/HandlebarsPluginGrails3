@@ -15,6 +15,7 @@ import asset.pipeline.i18n.I18nTagLib
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
+import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache
 import com.github.jknack.handlebars.io.FileTemplateLoader
 
 @Singleton
@@ -43,8 +44,14 @@ class HandlebarsHelper {
 	}
 	
 	private void init() {
-		this.handlebars = new Handlebars(new FileTemplateLoader(getTemplatesBaseDir(),".html"))
-
+		
+		if(Holders.config.grails.plugins.handlebars.template.cache) {
+			this.handlebars = new Handlebars(new FileTemplateLoader(getTemplatesBaseDir(),".html")).with(new ConcurrentMapTemplateCache())
+		}
+		else {
+			this.handlebars = new Handlebars(new FileTemplateLoader(getTemplatesBaseDir(),".html"))
+		}
+		
 		/*
 		 * Registra el helper "i18nbundle" que permite invocar en handlebars el comportamiento del tag <asset:i18n/> del Asset pipeline plugin
 		 * para crear la funcion $L('nombre.mensaje') que permite utilizar mensajes internacionalizados del lado de javascript
