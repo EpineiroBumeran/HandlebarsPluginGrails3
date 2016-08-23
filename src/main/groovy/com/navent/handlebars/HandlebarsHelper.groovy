@@ -105,8 +105,13 @@ class HandlebarsHelper {
 			
 			public CharSequence apply(String src, Options options) {
 				
-				def asset = Holders.grailsApplication.mainContext.getBean(AssetsTagLib.class.name);
-				return new Handlebars.SafeString(asset.image(src: src))
+				def cssclass = options.hash('class')
+				def alt = options.hash('alt')
+				def height = options.hash('height')
+				def width = options.hash('width')
+				
+				def asset = Holders.grailsApplication.mainContext.getBean(AssetsTagLib.class.name)
+				return new Handlebars.SafeString(asset.image(src: src, class: cssclass, alt: alt, height: height, width: width))
 			}
 		});
 	
