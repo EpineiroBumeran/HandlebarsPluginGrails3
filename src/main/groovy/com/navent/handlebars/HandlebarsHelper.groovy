@@ -94,7 +94,19 @@ class HandlebarsHelper {
 				
 				def asset = Holders.grailsApplication.mainContext.getBean(AssetsTagLib.class.name);
 				def media = options.hash('media')
-				return new Handlebars.SafeString(asset.stylesheet (src: src, media: media ? media: 'screen'))
+				return new Handlebars.SafeString(asset.stylesheet(src: src, media: media ? media: 'screen'))
+			}
+		});
+	
+		/*
+		 * Registra el helper "imgAsset" que permite invocar en handlebars el comportamiento del tag <asset:img  src="img.jpg"/> del Asset pipeline plugin
+		 */
+		this.handlebars.registerHelper("imgAsset", new Helper<String>() {
+			
+			public CharSequence apply(String src, Options options) {
+				
+				def asset = Holders.grailsApplication.mainContext.getBean(AssetsTagLib.class.name);
+				return new Handlebars.SafeString(asset.image(src: src))
 			}
 		});
 	
