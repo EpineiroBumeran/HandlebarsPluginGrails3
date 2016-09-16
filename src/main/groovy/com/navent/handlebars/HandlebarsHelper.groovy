@@ -16,6 +16,7 @@ import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
 import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache
+import com.github.jknack.handlebars.helper.AssignHelper
 import com.github.jknack.handlebars.helper.StringHelpers
 import com.github.jknack.handlebars.io.FileTemplateLoader
 
@@ -55,6 +56,9 @@ class HandlebarsHelper {
 		
 		//registramos helpers de strings
 		StringHelpers.register(this.handlebars)
+		
+		//registramos helper auxiliar para asignar variables
+		this.handlebars.registerHelper(AssignHelper.NAME, AssignHelper.INSTANCE)
 		
 		/*
 		 * Registra el helper "i18nbundle" que permite invocar en handlebars el comportamiento del tag <asset:i18n/> del Asset pipeline plugin
